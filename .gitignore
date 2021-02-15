@@ -1,0 +1,4 @@
+# Ignore Xcode files
+*.xcodeproj/
+config.yml
+ops.json
