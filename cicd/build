@@ -1,0 +1,4 @@
+#!/bin/sh
+export DOCKER_HOST=amd64-docker.gautier.local
+docker build --tag minecraft:build . --no-cache
+
