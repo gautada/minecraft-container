@@ -1,5 +1,10 @@
 # Minecraft
 
+## Server Setup
+
+This is a minecraft server base on [PaperMC](https://papermc.io) and uses [GeyserMC](https://geysermc.org) as a Bedrock proxy. 
+
+
 ## Configuration
 
 
