@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
-
+ENV PAPERMC_VERSION=1.16.5
+ENV PAPERMC_BUILD=468
+ENV GEYSER_VERSION=621
 
 EXPOSE 25565/tcp
 EXPOSE 19132/udp
@@ -9,19 +11,18 @@ RUN export TZ=US/Eastern \
  && echo $TZ > /etc/timezone \
  && apt-get update -y  \
  && apt-get install -y bash openjdk-11-jre-headless \
- && mkdir -p /opt/minecraft /opt/minecraft-data /opt/geyser
+ && mkdir -p /opt/minecraft /opt/minecraft-data
 
 COPY eula.txt /etc/minecraft/eula.txt
-COPY ops.json /etc/minecraft/ops.json
+# COPY ops.json /etc/minecraft/ops.json
 COPY server.properties /etc/minecraft/server.properties
-COPY config.yml /etc/minecraft/config.yml
+# COPY config.yml /etc/minecraft/config.yml
 
 # +----------------------------------------------------------------------------------------+
 # GeyserMC
 # https://geysermc.org
 WORKDIR /opt/minecraft
-ADD https://ci.opencollab.dev//job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar \
- /opt/minecraft/Geyser-Spigot.jar
+ADD https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar Geyser-Spigot.jar
 RUN mkdir /etc/geyser \
  && ln -s /etc/minecraft/config.yml /etc/geyser.yml
  
@@ -30,9 +31,7 @@ RUN mkdir /etc/geyser \
 # https://papermc.io
 # https://hub.docker.com/r/marctv/minecraft-papermc-server/dockerfile
 WORKDIR /opt/minecraft
-ENV PAPERMC_VERSION=1.16.5
-ENV PAPERMV_BUILD=468
-ADD https://papermc.io/api/v1/paper/$PAPERMC_VERSION/$PAPERMV_BUILD/download paperclip.jar
+ADD https://papermc.io/api/v1/paper/$PAPERMC_VERSION/$PAPERMC_BUILD/download paperclip.jar
 RUN /usr/bin/java -jar paperclip.jar \
  && mv ./cache/patched*.jar ./ \
  && ln -s patched*.jar patched.jar \
