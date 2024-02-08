@@ -1,0 +1,112 @@
+ARG ALPINE_VERSION=latest
+
+# │ STAGE: CONTAINER
+# ╰――――――――――――――――――――――――――――――――――――――――――――――――――――――
+FROM gautada/alpine:$ALPINE_VERSION as CONTAINER
+
+# ╭――――――――――――――――――――╮
+# │ METADATA           │
+# ╰――――――――――――――――――――╯
+LABEL source="https://github.com/gautada/minecraft-container.git"
+LABEL maintainer="Adam Gautier <adam@gautier.org>"
+LABEL description="A container for minecraft server"
+
+# ╭―
+# │ USER
+# ╰――――――――――――――――――――
+ARG USER=minecraft
+RUN /usr/sbin/usermod -l $USER alpine
+RUN /usr/sbin/usermod -d /home/$USER -m $USER
+RUN /usr/sbin/groupmod -n $USER alpine
+RUN /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
+
+# ╭―
+# │ PRIVILEGES
+# ╰――――――――――――――――――――
+# COPY privileges /etc/container/privileges
+
+# ╭―
+# │ BACKUP
+# ╰――――――――――――――――――――
+# COPY backup /etc/container/backup
+
+
+# ╭―
+# │ ENTRYPOINT
+# ╰――――――――――――――――――――
+COPY entrypoint /etc/container/entrypoint
+
+# ╭―
+# │ APPLICATION
+# ╰――――――――――――――――――――
+RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
+
+ARG PAPERMC_VERSION="1.20.4"
+ARG PAPERMC_BUILD="409"
+
+RUN /bin/mkdir -p /opt/minecraft
+
+WORKDIR /opt/minecraft
+ 
+ADD https://api.papermc.io/v2/projects/paper/versions/$PAPERMC_VERSION/builds/$PAPERMC_BUILD/downloads/paper-$PAPERMC_VERSION-$PAPERMC_BUILD.jar paper-$PAPERMC_VERSION-$PAPERMC_BUILD.jar
+
+COPY eula.txt /opt/minecraft/eula.txt
+
+# ╭―
+# │ CONTAINER
+# ╰――――――――――――――――――――
+RUN chown -R $USER:$USER /opt/minecraft
+USER $USER
+VOLUME /mnt/volumes/backup
+VOLUME /mnt/volumes/configmaps
+VOLUME /mnt/volumes/container
+VOLUME /mnt/volumes/secrets
+VOLUME /mnt/volumes/source
+WORKDIR /home/$USER
+
+# ARG GEYSERMC_VERSION="427"
+# 
+# ADD https://download.geysermc.
+# org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot
+
+# EXPOSE 25565/tcp
+# EXPOSE 19132/udp
+
+
+# COPY eula.txt /etc/minecraft/eula.txt
+# # COPY ops.json /etc/minecraft/ops.json
+# COPY server.properties /etc/minecraft/server.properties
+# # COPY config.yml /etc/minecraft/config.yml
+
+# GeyserMC
+# https://geysermc.org
+# WORKDIR /opt/minecraft
+# ADD https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar Geyser-Spigot.jar
+# RUN mkdir /etc/geyser \
+#  && ln -s /etc/minecraft/config.yml /etc/geyser.yml
+ 
+# PaperMC
+# https://papermc.io
+# https:java //hub.docker.com/r/marctv/minecraft-papermc-server/dockerfile
+# WORKDIR /opt/minecraft
+# ADD https://papermc.io/api/v1/paper/$PAPERMC_VERSION/$PAPERMC_BUILD/download paperclip.jar
+# RUN /usr/bin/java -jar paperclip.jar \
+#  && mv ./cache/patched*.jar ./ \
+#  && ln -s patched*.jar patched.jar \
+#  && rm -rf *.json cache logs eula.txt server.properties plugins \
+#  && echo "/usr/bin/java -jar -Xms1G -Xmx3G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 \
+# 						-Dusing.aikars.flags=mcflags.emc.gs -Dcom.mojang.eula.agree=true /opt/minecraft/patched.jar \
+# 						--nojline nogui" >> /root/.bash_history
+ 
+# WORKDIR /opt/minecraft-data
+# 
+# CMD ["/usr/bin/java", "-jar", "-Xms3G", "-Xmx10G", "-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", \
+# 	 "-XX:MaxGCPauseMillis=200", "-XX:+UnlockExperimentalVMOptions", "-XX:+DisableExplicitGC", \
+# 	 "-XX:+AlwaysPreTouch", "-XX:G1NewSizePercent=30", "-XX:G1MaxNewSizePercent=40", \
+# 	 "-XX:G1HeapRegionSize=8M", "-XX:G1ReservePercent=20", "-XX:G1HeapWastePercent=5", \
+# 	 "-XX:G1MixedGCCountTarget=4", "-XX:InitiatingHeapOccupancyPercent=15", \
+# 	 "-XX:G1MixedGCLiveThresholdPercent=90", "-XX:G1RSetUpdatingPauseTimePercent=5", \
+# 	 "-XX:SurvivorRatio=32", "-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1",  \
+# 	 "-Dusing.aikars.flags=mcflags.emc.gs", "-Dcom.mojang.eula.agree=true", "/opt/minecraft/patched.jar"]
+
+# CMD ["tail", "-f", "/dev/null"]

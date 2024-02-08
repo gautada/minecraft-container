@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  minecraft:
+    build:
+      args:
+        ALPINE_VERSION: "latest"
+        CONTAINER_VERSION: "2.1.4"
+        MINECRAFT_VERSION: "2.1.4"
+      context: .
+      dockerfile: container.build
+      no_cache: true  
+      
+      tags:
+        - "minecraft:build"
+        - "gautada/minecraft:build"
+        - "gautada/minecraft:latest"
+    image: "gautada/minecraft:latest"
+    # environment:
+    # - DUPLICITY_ENCRYPTER_FINGERPRINT=${COMPOSE_DUPLICITY_ENCRYPTER_FINGERPRINT}
+    volumes:
+      - "Container:/mnt/volumes/container"
+      - "Backup:/mnt/volumes/backup"
+      - "Configmaps:/mnt/volumes/configmaps"
+      - "Secrets:/mnt/volumes/secrets"
+
+volumes:
+  Container:
+    external: true
+    name: "Container"
+
+  Backup:
+    external: true
+    name: "Backup"
+
+  Configmaps:
+    external: true
+    name: "Configmaps"
+    
+  Secrets:
+    external: true
+    name: "Secrets"
