@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  minecraft:
+    build:
+      args:
+        ALPINE_VERSION: "latest"
+        CONTAINER_VERSION: "1.20.4-409-427-90"
+        MINECRAFT_VERSION: "1.20.4"
+        PAPER_VERSION: "409"
+        SPIGOT_VERSION: "427"
+        FLOODGATE_VERSION: "90"
+      context: .
+      dockerfile: container.build
+      no_cache: true  
+      
+      tags:
+        - "minecraft:build"
+        - "gautada/minecraft:build"
+        - "gautada/minecraft:latest"
+    image: "gautada/minecraft:latest"
+    environment:
+    - MINECRAFT_SERVER_OPTIONS="-Dcom.mojang.eula.agree=true"
+    ports:
+    - "25565:25565/tcp"
+    - "25565:25565/udp"
+    volumes:
+      - "Container:/mnt/volumes/container"
+      - "Backup:/mnt/volumes/backup"
+      - "Configmaps:/mnt/volumes/configmaps"
+      - "Secrets:/mnt/volumes/secrets"
+
+volumes:
+  Container:
+    external: true
+    name: "Container"
+
+  Backup:
+    external: true
+    name: "Backup"
+
+  Configmaps:
+    external: true
+    name: "Configmaps"
+    
+  Secrets:
+    external: true
+    name: "Secrets"

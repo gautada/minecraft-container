@@ -1,0 +1,36 @@
+#!/bin/ash
+#
+# entrypoint: Located at `/etc/container/entrypoint` this script is the custom
+#             entry for a container as called by `/usr/bin/container-entrypoint` set
+#             in the upstream [alpine-container](https://github.com/gautada/alpine-container).
+#             The default template is kept in
+#             [gist](https://gist.github.com/gautada/f185700af585a50b3884ad10c2b02f98)
+
+minecraft_version() {
+ /bin/ls /opt/minecraft/paper* | /usr/bin/awk -F '-' '{print $2}'
+}
+
+paper_version() {
+ /bin/ls /opt/minecraft/paper* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}'
+}
+
+spigot_version() {
+ /bin/ls /opt/minecraft/spigot* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}'
+}
+
+floodgate_version() {
+ /bin/ls /opt/minecraft/floodgate* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}'
+}
+
+container_version() {
+ echo "$(minecraft_version)-$(paper_version)-$(spigot_version)-$(floodgate_version)"
+}
+
+container_entrypoint() {
+ # if [ ! -f "$HOME/server/paper.jar" ] ; then
+ #  /bin/ln -fsv /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $HOME/server/paper.jar
+ # fi 
+ /bin/echo "Launch Minecraft Server(paper) in screen [Use 'screen -x' to attach]"
+ /bin/echo "Minecraft options: $MINECRAFT_SERVER_OPTIONS"
+ /usr/bin/screen -m /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
+}

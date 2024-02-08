@@ -1,5 +1,0 @@
-#!/bin/sh
-export DOCKER_HOST=amd64-docker.gautier.local
-docker build --tag minecraft:build . --no-cache
-docker tag minecraft:build gautada/minecraft:1.16.5
-docker push gautada/minecraft:1.16.5
