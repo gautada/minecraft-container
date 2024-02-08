@@ -4,8 +4,11 @@ services:
     build:
       args:
         ALPINE_VERSION: "latest"
-        CONTAINER_VERSION: "2.1.4"
-        MINECRAFT_VERSION: "2.1.4"
+        CONTAINER_VERSION: "1.20.4-409-427-90"
+        MINECRAFT_VERSION: "1.20.4"
+        PAPER_VERSION: "409"
+        SPIGOT_VERSION: "427"
+        FLOODGATE_VERSION: "90"
       context: .
       dockerfile: container.build
       no_cache: true  
@@ -15,8 +18,11 @@ services:
         - "gautada/minecraft:build"
         - "gautada/minecraft:latest"
     image: "gautada/minecraft:latest"
-    # environment:
-    # - DUPLICITY_ENCRYPTER_FINGERPRINT=${COMPOSE_DUPLICITY_ENCRYPTER_FINGERPRINT}
+    environment:
+    - MINECRAFT_SERVER_OPTIONS="-Dcom.mojang.eula.agree=true"
+    ports:
+    - "25565:25565/tcp"
+    - "25565:25565/udp"
     volumes:
       - "Container:/mnt/volumes/container"
       - "Backup:/mnt/volumes/backup"

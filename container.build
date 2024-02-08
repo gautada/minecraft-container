@@ -41,20 +41,25 @@ COPY entrypoint /etc/container/entrypoint
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
 
-ARG PAPERMC_VERSION="1.20.4"
-ARG PAPERMC_BUILD="409"
+ARG MINECRAFT_VERSION="1.20.4"
+ARG PAPER_VERSION="409"
+ARG SPIGOT_VERSION="427"
+ARG FLOODGATE_VERSION="90"
 
-RUN /bin/mkdir -p /opt/minecraft
+RUN ln -fsv /mnt/volumes/container /home/$USER/server
 
 WORKDIR /opt/minecraft
  
-ADD https://api.papermc.io/v2/projects/paper/versions/$PAPERMC_VERSION/builds/$PAPERMC_BUILD/downloads/paper-$PAPERMC_VERSION-$PAPERMC_BUILD.jar paper-$PAPERMC_VERSION-$PAPERMC_BUILD.jar
+ADD https://api.papermc.io/v2/projects/paper/versions/$MINECRAFT_VERSION/builds/$PAPER_VERSION/downloads/paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar
 
-COPY eula.txt /opt/minecraft/eula.txt
+ADD https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/$SPIGOT_VERSION/downloads/spigot spigot-$MINECRAFT_VERSION-$SPIGOT_VERSION.jar
+
+ADD https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/$FLOODGATE_VERSION/downloads/spigot floodgate-$MINECRAFT_VERSION-$FLOODGATE_VERSION.jar
 
 # ╭―
-# │ CONTAINER
+# │ CONFIGURATION
 # ╰――――――――――――――――――――
+RUN chown -R $USER:$USER /home/$USER
 RUN chown -R $USER:$USER /opt/minecraft
 USER $USER
 VOLUME /mnt/volumes/backup
@@ -62,21 +67,11 @@ VOLUME /mnt/volumes/configmaps
 VOLUME /mnt/volumes/container
 VOLUME /mnt/volumes/secrets
 VOLUME /mnt/volumes/source
-WORKDIR /home/$USER
-
-# ARG GEYSERMC_VERSION="427"
-# 
-# ADD https://download.geysermc.
-# org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot
-
-# EXPOSE 25565/tcp
+EXPOSE 25565/tcp
+EXPOSE 25565/udp
 # EXPOSE 19132/udp
+WORKDIR /home/$USER/server
 
-
-# COPY eula.txt /etc/minecraft/eula.txt
-# # COPY ops.json /etc/minecraft/ops.json
-# COPY server.properties /etc/minecraft/server.properties
-# # COPY config.yml /etc/minecraft/config.yml
 
 # GeyserMC
 # https://geysermc.org
@@ -85,28 +80,4 @@ WORKDIR /home/$USER
 # RUN mkdir /etc/geyser \
 #  && ln -s /etc/minecraft/config.yml /etc/geyser.yml
  
-# PaperMC
-# https://papermc.io
-# https:java //hub.docker.com/r/marctv/minecraft-papermc-server/dockerfile
-# WORKDIR /opt/minecraft
-# ADD https://papermc.io/api/v1/paper/$PAPERMC_VERSION/$PAPERMC_BUILD/download paperclip.jar
-# RUN /usr/bin/java -jar paperclip.jar \
-#  && mv ./cache/patched*.jar ./ \
-#  && ln -s patched*.jar patched.jar \
-#  && rm -rf *.json cache logs eula.txt server.properties plugins \
-#  && echo "/usr/bin/java -jar -Xms1G -Xmx3G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 \
-# 						-Dusing.aikars.flags=mcflags.emc.gs -Dcom.mojang.eula.agree=true /opt/minecraft/patched.jar \
-# 						--nojline nogui" >> /root/.bash_history
- 
-# WORKDIR /opt/minecraft-data
-# 
-# CMD ["/usr/bin/java", "-jar", "-Xms3G", "-Xmx10G", "-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", \
-# 	 "-XX:MaxGCPauseMillis=200", "-XX:+UnlockExperimentalVMOptions", "-XX:+DisableExplicitGC", \
-# 	 "-XX:+AlwaysPreTouch", "-XX:G1NewSizePercent=30", "-XX:G1MaxNewSizePercent=40", \
-# 	 "-XX:G1HeapRegionSize=8M", "-XX:G1ReservePercent=20", "-XX:G1HeapWastePercent=5", \
-# 	 "-XX:G1MixedGCCountTarget=4", "-XX:InitiatingHeapOccupancyPercent=15", \
-# 	 "-XX:G1MixedGCLiveThresholdPercent=90", "-XX:G1RSetUpdatingPauseTimePercent=5", \
-# 	 "-XX:SurvivorRatio=32", "-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1",  \
-# 	 "-Dusing.aikars.flags=mcflags.emc.gs", "-Dcom.mojang.eula.agree=true", "/opt/minecraft/patched.jar"]
 
-# CMD ["tail", "-f", "/dev/null"]

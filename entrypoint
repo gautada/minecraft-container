@@ -6,17 +6,31 @@
 #             The default template is kept in
 #             [gist](https://gist.github.com/gautada/f185700af585a50b3884ad10c2b02f98)
 
+minecraft_version() {
+ /bin/ls /opt/minecraft/paper* | /usr/bin/awk -F '-' '{print $2}'
+}
+
+paper_version() {
+ /bin/ls /opt/minecraft/paper* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}'
+}
+
+spigot_version() {
+ /bin/ls /opt/minecraft/spigot* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}'
+}
+
+floodgate_version() {
+ /bin/ls /opt/minecraft/floodgate* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}'
+}
 
 container_version() {
- MINECRAFT="$(/bin/ls /opt/minecraft/paper* | /usr/bin/awk -F '-' '{print $2}')"
- PAPER="$(/bin/ls /opt/minecraft/paper* | /usr/bin/awk -F '-' '{print $3}' | /usr/bin/awk -F '.' '{print $1}')"
- echo "$MINECARFT-$PAPER"
+ echo "$(minecraft_version)-$(paper_version)-$(spigot_version)-$(floodgate_version)"
 }
 
 container_entrypoint() {
+ # if [ ! -f "$HOME/server/paper.jar" ] ; then
+ #  /bin/ln -fsv /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $HOME/server/paper.jar
+ # fi 
  /bin/echo "Launch Minecraft Server(paper) in screen [Use 'screen -x' to attach]"
- cd /opt/minecraft
- /usr/bin/screen -m /usr/bin/java -jar paper-1.20.4-409.jar
- # /bin/echo "General blocking function."
- # /usr/bin/tail -f /dev/null
+ /bin/echo "Minecraft options: $MINECRAFT_SERVER_OPTIONS"
+ /usr/bin/screen -m /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
 }
