@@ -2,23 +2,25 @@
 
 ## Server Setup
 
-This is a minecraft server base on [PaperMC](https://papermc.io) and uses [GeyserMC](https://geysermc.org) as a Bedrock proxy. 
+This is a minecraft server based on [PaperMC](https://papermc.io) patches for performance and uses [GeyserMC Spigot](https://geysermc.org) as a Bedrock proxy with [GeyserMC Floodgate](https://geysermc.org) to bypass Java paid edition login.
 
+- [PaperMC](https://papermc.io): The most widely used, high-performance Minecraft server that aims to fix gameplay and mechanics inconsistencies.
+- [GeyserMC Spigot](https://geysermc.org): Enable clients from Minecraft Bedrock Edition to join your Minecraft Java server.
+- [GeyserMC Floodgate](https://geysermc.org): Allows Geyser players to join servers without needing to log into a paid Java Edition account.
 
-## Configuration
+## Notes
+- 2024-02-08: Rebuilt currently not using the geysermc proxy
+  - Uses screen to lunch the server so you can attach to a running server using `screen -x`.
+  - Simplified server options in the environment variable MINECRAFT_SERVER_OPTIONS for future use options where:
+  ```
+  -Xms1G -Xmx3G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=mcflags.emc.gs -Dcom.mojang.eula.agree=true
+  ```
+  - Another option that was in the old configs `--nojline nogui`
+  - "Failed to get system info for Microarchitecture" warning seems to be related to https://github.com/PaperMC/Paper/issues/9785
+  - Testing the auto build
+  
+  
 
-
-### Build Script
-```docker build --tag minecraft:$(date '+%Y-%m-%d')-build . && docker tag minecraft:$(date '+%Y-%m-%d')-build minecraft:latest```
-
-### Run Script
-```docker run -Pit --rm --name redis minecraft:latest /bin/bash```
-
-### Deploy Script
-```docker tag minecraft:latest localhost:32000/minecraft:latest && docker push localhost:32000/minecraft:latest```
-
-
-wget https://launcher.mojang.com/v1/objects/
 
 ### Kubernetes
 ```
@@ -90,48 +92,6 @@ spec:
     requests:
       storage: 250Mi
 ```
-
-
-
-kubectl edit -n ingress configmap/nginx-ingress-tcp-microk8s-conf
-kubectl edit -n ingress daemonset/nginx-ingress-microk8s-controller
-
-
-
-
-```
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: minecraft-volume
-spec:
-  capacity:
-    storage: 250Mi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: nfs
-  mountOptions:
-    - hard
-    - nfsvers=4.1
-  nfs:
-    path: /nas/prometheus/volumes/minecraft
-    server: 192.168.4.200
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: minecraft-claim
-  namespace: games
-spec:
-  storageClassName: nfs
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 250Mi
-  volumeName: minecraft-volume
 
 
 
