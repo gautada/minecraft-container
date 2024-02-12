@@ -18,7 +18,7 @@ This is a minecraft server based on [PaperMC](https://papermc.io) patches for pe
   - Another option that was in the old configs `--nojline nogui`
   - "Failed to get system info for Microarchitecture" warning seems to be related to https://github.com/PaperMC/Paper/issues/9785
   - Testing the auto build
-  
+- 2024-02-12: Flip/Flop  
   
 
 
