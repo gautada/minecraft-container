@@ -2,3 +2,4 @@
 *.xcodeproj/
 config.yml
 ops.json
+manifest/
