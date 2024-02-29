@@ -5,3 +5,5 @@ ops.json
 volumes
 *~
 .DS_Store
+.env
+
