@@ -32,5 +32,6 @@ container_entrypoint() {
  # fi 
  /bin/echo "Launch Minecraft Server(paper) in screen [Use 'screen -x' to attach]"
  /bin/echo "Minecraft options: $MINECRAFT_SERVER_OPTIONS"
- /usr/bin/screen -m /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
+ # /usr/bin/screen -m /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
+ /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
 }
