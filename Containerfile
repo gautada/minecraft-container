@@ -40,8 +40,8 @@ COPY entrypoint /etc/container/entrypoint
 # │ APPLICATION
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
-
-ARG MINECRAFT_VERSION="1.20.4"
+ARG CONTAINER_VERSION="1.20.4"
+ARG MINECRAFT_VERSION="$CONTAINER_VERSION"
 ARG PAPER_VERSION="409"
 ARG SPIGOT_VERSION="427"
 ARG FLOODGATE_VERSION="90"
