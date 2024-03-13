@@ -1,61 +1,50 @@
 kind: pipeline
 type: exec
-name: Games - Minecraft Container
+name: CICD - Container Build
 
 platform:
   os: linux
   arch: arm64
 
 steps:
-
 - name: build
   commands:
-  - /usr/bin/podman-compose build --no-cache
+  - /usr/sbin/image-build
   - /usr/bin/podman images
-  
-- name: test
+
+- name: push
   environment:
     DOCKERIO_USERNAME:
       from_secret: username.docker.io
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
+    PUBLISH_REPOSITORY:
+      value: docker.io
   commands:
-  - echo "No tests are defined at this time."
-  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-  - /usr/bin/podman tag $DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):test
-  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):test
-  
-- name: integrate
+  - pwd
+  - /usr/sbin/image-name
+  - /usr/sbin/image-tag test
+  - /usr/sbin/image-publish test
+
+- name: publish
   environment:
     DOCKERIO_USERNAME:
       from_secret: username.docker.io
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
+    PUBLISH_REPOSITORY:
+      value: docker.io
   commands:
-  - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
-  - /usr/bin/podman tag $(/usr/bin/compose-data --name):build docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
-  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
-  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
+  - echo "$(/usr/sbin/image-version)"
+  - /usr/sbin/image-tag "$(/usr/sbin/image-version)"
+  - /usr/sbin/image-publish "$(/usr/sbin/image-version)"
+  - /usr/sbin/image-tag latest
+  - /usr/sbin/image-publish latest
   when:
     branch:
-    - main
+    - main  
 
-
-- name: deploy
-  failure: ignore
-  environment:
-    DRONE_SERVER:
-      from_secret: server.drone.io
-    DRONE_TOKEN:
-      from_secret: token.drone.io
-  commands:
-  - echo "Deploy not defined"
-  when:
-    branch:
-    - main
-    
 trigger:
   event:
   - push
-
+  

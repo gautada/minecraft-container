@@ -4,7 +4,7 @@ services:
     build:
       args:
         ALPINE_VERSION: "latest"
-        CONTAINER_VERSION: "1.20.4-409-427-90"
+        CONTAINER_VERSION: "1.20.4-426-427-90"
         MINECRAFT_VERSION: "1.20.4"
         PAPER_VERSION: "423"
         SPIGOT_VERSION: "427"

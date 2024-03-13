@@ -2,4 +2,9 @@
 *.xcodeproj/
 config.yml
 ops.json
-manifest/
+
+volumes
+*~
+.DS_Store
+.env
+manifest
