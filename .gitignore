@@ -2,6 +2,7 @@
 *.xcodeproj/
 config.yml
 ops.json
+
 volumes
 *~
 .DS_Store
