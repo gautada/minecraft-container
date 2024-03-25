@@ -28,7 +28,7 @@ RUN /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 # ╭―
 # │ BACKUP
 # ╰――――――――――――――――――――
-# COPY backup /etc/container/backup
+COPY backup /etc/container/backup
 
 
 # ╭―
