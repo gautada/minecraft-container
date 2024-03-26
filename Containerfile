@@ -2,14 +2,14 @@ ARG ALPINE_VERSION=latest
 
 # │ STAGE: CONTAINER
 # ╰――――――――――――――――――――――――――――――――――――――――――――――――――――――
-FROM docker.io/gautada/alpine:$ALPINE_VERSION as CONTAINER
+FROM gautada/alpine:$ALPINE_VERSION as CONTAINER
 
 # ╭――――――――――――――――――――╮
 # │ METADATA           │
 # ╰――――――――――――――――――――╯
 LABEL source="https://github.com/gautada/minecraft-container.git"
 LABEL maintainer="Adam Gautier <adam@gautier.org>"
-LABEL description="A container for minecraft server"
+LABEL description="A container for a minecraft server based on paper"
 
 # ╭―
 # │ USER
@@ -41,13 +41,8 @@ COPY entrypoint /etc/container/entrypoint
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
 
-ARG CONTAINER_VERSION="1.20.4"
-ARG MINECRAFT_VERSION="$CONTAINER_VERSION"
-ARG PAPER_VERSION="409"
-
 ARG MINECRAFT_VERSION="1.20.4"
 ARG PAPER_VERSION="436"
-
 ARG SPIGOT_VERSION="427"
 ARG FLOODGATE_VERSION="90"
 
