@@ -3,6 +3,6 @@
 # backup: This script defines the default backup mechanism function and should be overloaded by downstream controls
 
 container_backup() {
- /bin/cp -r /mnt/volumes/container/* ./
+ /bin/cp -vr /mnt/volumes/container/* ./
  return $?
 }
