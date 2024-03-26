@@ -28,7 +28,7 @@ RUN /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 # ╭―
 # │ BACKUP
 # ╰――――――――――――――――――――
-# COPY backup /etc/container/backup
+COPY backup /etc/container/backup
 
 
 # ╭―
@@ -40,9 +40,14 @@ COPY entrypoint /etc/container/entrypoint
 # │ APPLICATION
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
+
 ARG CONTAINER_VERSION="1.20.4"
 ARG MINECRAFT_VERSION="$CONTAINER_VERSION"
 ARG PAPER_VERSION="409"
+
+ARG MINECRAFT_VERSION="1.20.4"
+ARG PAPER_VERSION="436"
+
 ARG SPIGOT_VERSION="427"
 ARG FLOODGATE_VERSION="90"
 
@@ -73,11 +78,5 @@ EXPOSE 25565/udp
 WORKDIR /home/$USER/server
 
 
-# GeyserMC
-# https://geysermc.org
-# WORKDIR /opt/minecraft
-# ADD https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar Geyser-Spigot.jar
-# RUN mkdir /etc/geyser \
-#  && ln -s /etc/minecraft/config.yml /etc/geyser.yml
  
 
