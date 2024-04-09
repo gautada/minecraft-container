@@ -4,5 +4,11 @@
 
 container_backup() {
  /bin/cp -vr /mnt/volumes/container/* ./
+ /bin/rm -rf ./cache/
+ /bin/rm -rf ./dist/
+ /bin/rm -rf ./libraries/
+ /bin/rm -rf ./logs/*.log.gz
+ /bin/rm -rf ./node_modules
+ /bin/rm -rf ./versions/
  return $?
 }
