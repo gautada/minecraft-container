@@ -23,7 +23,8 @@ floodgate_version() {
 }
 
 container_version() {
- echo "$(minecraft_version)-$(paper_version)-$(spigot_version)-$(floodgate_version)"
+ # echo "$(minecraft_version)-$(paper_version)-$(spigot_version)-$(floodgate_version)"
+ echo "$(minecraft_version)-$(paper_version)"
 }
 
 container_entrypoint() {

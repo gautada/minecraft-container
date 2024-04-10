@@ -52,9 +52,9 @@ WORKDIR /opt/minecraft
  
 ADD https://api.papermc.io/v2/projects/paper/versions/$MINECRAFT_VERSION/builds/$PAPER_VERSION/downloads/paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar
 
-ADD https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/$SPIGOT_VERSION/downloads/spigot spigot-$MINECRAFT_VERSION-$SPIGOT_VERSION.jar
+# ADD https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/$SPIGOT_VERSION/downloads/spigot spigot-$MINECRAFT_VERSION-$SPIGOT_VERSION.jar
 
-ADD https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/$FLOODGATE_VERSION/downloads/spigot floodgate-$MINECRAFT_VERSION-$FLOODGATE_VERSION.jar
+# ADD https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/$FLOODGATE_VERSION/downloads/spigot floodgate-$MINECRAFT_VERSION-$FLOODGATE_VERSION.jar
 
 # ╭―
 # │ CONFIGURATION
