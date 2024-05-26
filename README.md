@@ -1,6 +1,6 @@
 # Minecraft
 
-ff
+ff2
 
 ## Server Setup
 
