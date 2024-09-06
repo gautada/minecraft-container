@@ -41,7 +41,7 @@ COPY entrypoint /etc/container/entrypoint
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
 
-ARG MINECRAFT_VERSION="1.20.4"
+ARG MINECRAFT_VERSION="1.21.1"
 ARG PAPER_VERSION="436"
 ARG SPIGOT_VERSION="427"
 ARG FLOODGATE_VERSION="90"
@@ -49,7 +49,7 @@ ARG FLOODGATE_VERSION="90"
 RUN ln -fsv /mnt/volumes/container /home/$USER/server
 
 WORKDIR /opt/minecraft
- 
+# https://api.papermc.io/v2/projects/paper/versions/
 ADD https://api.papermc.io/v2/projects/paper/versions/$MINECRAFT_VERSION/builds/$PAPER_VERSION/downloads/paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar
 
 # ADD https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/$SPIGOT_VERSION/downloads/spigot spigot-$MINECRAFT_VERSION-$SPIGOT_VERSION.jar
