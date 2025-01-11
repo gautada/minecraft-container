@@ -2,7 +2,7 @@ ARG ALPINE_VERSION=latest
 
 # │ STAGE: CONTAINER
 # ╰――――――――――――――――――――――――――――――――――――――――――――――――――――――
-FROM gautada/alpine:$ALPINE_VERSION as CONTAINER
+FROM docker.io/gautada/alpine:$ALPINE_VERSION as CONTAINER
 
 # ╭――――――――――――――――――――╮
 # │ METADATA           │
