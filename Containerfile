@@ -23,7 +23,7 @@ RUN /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 # ╭―
 # │ PRIVILEGES
 # ╰――――――――――――――――――――
-# COPY privileges /etc/container/privileges
+COPY privileges /etc/container/privileges
 
 # ╭―
 # │ BACKUP
@@ -41,8 +41,8 @@ COPY entrypoint /etc/container/entrypoint
 # ╰――――――――――――――――――――
 RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
 
-ARG MINECRAFT_VERSION="1.21.1"
-ARG PAPER_VERSION="436"
+ARG MINECRAFT_VERSION="1.21.4"
+ARG PAPER_VERSION="94"
 ARG SPIGOT_VERSION="427"
 ARG FLOODGATE_VERSION="90"
 

@@ -4,11 +4,11 @@ services:
     build:
       args:
         ALPINE_VERSION: "latest"
-        CONTAINER_VERSION: "1.20.4-496-539-106"
-        MINECRAFT_VERSION: "1.20.4"
-        PAPER_VERSION: "496"
-        SPIGOT_VERSION: "539"
-        FLOODGATE_VERSION: "106"
+        CONTAINER_VERSION: "1.21.4-496-539-106"
+        MINECRAFT_VERSION: "1.21.4"
+        PAPER_VERSION: "1.21.3"
+        SPIGOT_VERSION: "731"
+        FLOODGATE_VERSION: "114"
       context: .
       dockerfile: container.build
       no_cache: true  
