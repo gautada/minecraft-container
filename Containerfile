@@ -39,18 +39,23 @@ COPY entrypoint /etc/container/entrypoint
 # ╭―
 # │ APPLICATION
 # ╰――――――――――――――――――――
-RUN /sbin/apk add --no-cache openjdk21-jre-headless screen
+# RUN /sbin/apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing openjdk23-jre-headless
+RUN /sbin/apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community openjdk21-jre-headless
+# RUN /sbin/apk add --no-cache oopenjdk17-jre-headless
+RUN /sbin/apk add --no-cache screen
 
 ARG MINECRAFT_VERSION="1.21.4"
-ARG PAPER_VERSION="94"
+ARG PAPER_VERSION="121"
 ARG SPIGOT_VERSION="427"
 ARG FLOODGATE_VERSION="90"
 
 RUN ln -fsv /mnt/volumes/container /home/$USER/server
 
 WORKDIR /opt/minecraft
+
+ADD https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar minecraft-1.21.4.jar
 # https://api.papermc.io/v2/projects/paper/versions/
-ADD https://api.papermc.io/v2/projects/paper/versions/$MINECRAFT_VERSION/builds/$PAPER_VERSION/downloads/paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar
+# ADD https://api.papermc.io/v2/projects/paper/versions/$MINECRAFT_VERSION/builds/$PAPER_VERSION/downloads/paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar
 
 # ADD https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/$SPIGOT_VERSION/downloads/spigot spigot-$MINECRAFT_VERSION-$SPIGOT_VERSION.jar
 
@@ -68,8 +73,8 @@ VOLUME /mnt/volumes/container
 VOLUME /mnt/volumes/secrets
 VOLUME /mnt/volumes/source
 EXPOSE 25565/tcp
-EXPOSE 25565/udp
-# EXPOSE 19132/udp
+# EXPOSE 25565/udp
+EXPOSE 19132/udp
 WORKDIR /home/$USER/server
 
 
