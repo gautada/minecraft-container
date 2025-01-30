@@ -1,6 +1,6 @@
 # Minecraft
 
-ff4
+Use `screen -rx` to attach and then `Ctrl A - D` to detach
 
 ## Server Setup
 

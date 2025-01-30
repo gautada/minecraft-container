@@ -1,82 +1,48 @@
-ARG ALPINE_VERSION=latest
+FROM debian:bookworm-slim
 
-# │ STAGE: CONTAINER
-# ╰――――――――――――――――――――――――――――――――――――――――――――――――――――――
-FROM docker.io/gautada/alpine:$ALPINE_VERSION as CONTAINER
-
-# ╭――――――――――――――――――――╮
-# │ METADATA           │
-# ╰――――――――――――――――――――╯
 LABEL source="https://github.com/gautada/minecraft-container.git"
 LABEL maintainer="Adam Gautier <adam@gautier.org>"
 LABEL description="A container for a minecraft server based on paper"
 
-# ╭―
-# │ USER
-# ╰――――――――――――――――――――
-ARG USER=minecraft
-RUN /usr/sbin/usermod -l $USER alpine
-RUN /usr/sbin/usermod -d /home/$USER -m $USER
-RUN /usr/sbin/groupmod -n $USER alpine
-RUN /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
-
-# ╭―
-# │ PRIVILEGES
-# ╰――――――――――――――――――――
-COPY privileges /etc/container/privileges
-
-# ╭―
-# │ BACKUP
-# ╰――――――――――――――――――――
-COPY backup /etc/container/backup
-
-
-# ╭―
-# │ ENTRYPOINT
-# ╰――――――――――――――――――――
-COPY entrypoint /etc/container/entrypoint
-
-# ╭―
-# │ APPLICATION
-# ╰――――――――――――――――――――
-# RUN /sbin/apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing openjdk23-jre-headless
-RUN /sbin/apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community openjdk21-jre-headless
-# RUN /sbin/apk add --no-cache oopenjdk17-jre-headless
-RUN /sbin/apk add --no-cache screen
-
+RUN apt-get update \
+ && apt-get install --yes screen \
+ && apt-get clean
+ 
 ARG MINECRAFT_VERSION="1.21.4"
-ARG PAPER_VERSION="121"
-ARG SPIGOT_VERSION="427"
-ARG FLOODGATE_VERSION="90"
+
+RUN mkdir -p /mnt/volumes/container /mnt/volumes/backup 
+
+WORKDIR /opt
+ADD https://download.java.net/java/early_access/jdk25/7/GPL/openjdk-25-ea+7_linux-aarch64_bin.tar.gz jdk-25.tgz
+RUN /usr/bin/tar zxf jdk-25.tgz \
+ && /usr/bin/mv jdk-25 jdk \
+ && /usr/bin/rm jdk-25.tgz \
+ && /usr/bin/ln -fsv /opt/jdk/bin/java /usr/bin/java
+ 
+WORKDIR /opt/minecraft
+ADD https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar minecraft-$MINECRAFT_VERSION.jar
+
+RUN /usr/bin/chown -R $USER:$USER /opt/minecraft \
+ && /usr/bin/chown -R $USER:$USER /mnt/volumes/container
+
+ARG USER=minecraft
+RUN /usr/sbin/useradd -m $USER
+RUN /usr/bin/chown -R $USER:$USER /opt
+USER $USER
 
 RUN ln -fsv /mnt/volumes/container /home/$USER/server
 
-WORKDIR /opt/minecraft
 
-ADD https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar minecraft-1.21.4.jar
-# https://api.papermc.io/v2/projects/paper/versions/
-# ADD https://api.papermc.io/v2/projects/paper/versions/$MINECRAFT_VERSION/builds/$PAPER_VERSION/downloads/paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar paper-$MINECRAFT_VERSION-$PAPER_VERSION.jar
-
-# ADD https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/$SPIGOT_VERSION/downloads/spigot spigot-$MINECRAFT_VERSION-$SPIGOT_VERSION.jar
-
-# ADD https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/$FLOODGATE_VERSION/downloads/spigot floodgate-$MINECRAFT_VERSION-$FLOODGATE_VERSION.jar
-
-# ╭―
-# │ CONFIGURATION
-# ╰――――――――――――――――――――
-RUN chown -R $USER:$USER /home/$USER
-RUN chown -R $USER:$USER /opt/minecraft
-USER $USER
 VOLUME /mnt/volumes/backup
-VOLUME /mnt/volumes/configmaps
 VOLUME /mnt/volumes/container
-VOLUME /mnt/volumes/secrets
-VOLUME /mnt/volumes/source
 EXPOSE 25565/tcp
-# EXPOSE 25565/udp
-EXPOSE 19132/udp
 WORKDIR /home/$USER/server
 
+ENTRYPOINT ["/usr/bin/screen", "-m", "/usr/bin/java", "-Xmx1024M", "-Xms1024M", "-jar", "/opt/minecraft/minecraft-1.21.4.jar", "nogui"]
 
+# ENTRYPOINT ["/usr/bin/screen", "-m" "/usr/bin/java", "-Xmx1024M", "-Xms1024M", "-jar", "/opt/minecraft/minecraft-1.21.4.jar", "nogui"]
+
+
+# /usr/sbin/java -Xmx1024M -Xms1024M -jar /opt/minecraft/minecraft-1.21.4.jar nogui
  
 

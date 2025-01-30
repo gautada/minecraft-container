@@ -35,7 +35,7 @@ container_entrypoint() {
  # /bin/echo "Launch Minecraft Server(paper)"
  /bin/echo "Launch Minecraft Server"
  /bin/echo "Minecraft options: $MINECRAFT_SERVER_OPTIONS"
- # /usr/bin/screen -m /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
+ # /usr/biscreen -m /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
  #  /usr/bin/java -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar $MINECRAFT_SERVER_OPTIONS
  # /usr/bin/java -Xms4G -Xmx4G -jar /opt/minecraft/paper-$(minecraft_version)-$(paper_version).jar --nogui
  /usr/bin/java -Xmx1024M -Xms1024M -jar /opt/minecraft/minecraft-1.21.4.jar nogui
